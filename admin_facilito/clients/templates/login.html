@@ -1,8 +1,7 @@
 <h1>Hola Login</h1>
 
-
-{{ nombre }}
-
-{% if edad > 20 %}
-{{ edad }}
-{% endif %}
+<form method = "post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="ingreso">
+</form>
