@@ -1,5 +1,9 @@
 <h1>Hola Login</h1>
 
+{% if message %}
+ <p> {{ message }} </p>
+{% endif %}
+
 <form method = "post" action="">
     {% csrf_token %}
     {{ form.as_p }}
