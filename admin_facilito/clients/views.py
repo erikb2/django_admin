@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from forms import LoginForm
+from forms import CreateUserForm
 from django.contrib.auth import authenticate, login as login_django, logout as logout_django
 from django.contrib.auth.decorators import login_required
 
@@ -36,6 +37,7 @@ def login(request):
     }
     return render(request, 'login.html', context)
 
+@login_required( login_url = 'client:login')
 def logout(request):
     logout_django(request)
     return redirect('client:login')
@@ -45,3 +47,11 @@ def logout(request):
 def dashboard(request):
     # if request.user.is_authenticate()
     return render(request, 'dashboard.html', {})
+
+
+def create(request):
+    form = CreateUserForm()
+    context = {
+        'form' : form
+    }
+    return render(request, 'create.html', context)
