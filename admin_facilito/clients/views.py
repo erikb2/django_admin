@@ -5,12 +5,40 @@ from forms import CreateUserForm
 from django.contrib.auth import authenticate, login as login_django, logout as logout_django
 from django.contrib.auth.decorators import login_required
 
+from django.views.generic import View
+
 # Create your views here.
 def show(request):
     return HttpResponse("Prueba correcta")
 
+class LoginView(View):
+    form = LoginForm()
+    message = None
+    template = 'login.html'
 
-def login(request):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return redirect('client:dashboard')
+        return render(request, self.template, self.get_context())
+    
+    def post(self, request, *args, **kwargs):
+        username_post = request.POST['username']
+        password_post = request.POST['password']
+        
+        # Se verifica si el usuario y contasena mandado existen dentro de la base de datos.
+        user = authenticate(username=username_post, password=password_post)
+        if user is not None:
+            login_django(request, user)
+            return redirect('client:dashboard')
+        else:
+            message = "Username o password incorrectos"
+        return render(request, self.template, self.get_context())
+
+    # Funcion para obtener el contexto
+    def get_context(self):
+        return {'form': self.form, 'message': self.message}
+
+def login_con_funcion(request):
     # Primero verifica que en caso de que el usuario este
     # logueado, lo regresa a la ventana de dashboard
     if request.user.is_authenticated():
