@@ -50,7 +50,17 @@ def dashboard(request):
 
 
 def create(request):
-    form = CreateUserForm()
+    
+    form = CreateUserForm(request.POST or None)  # El Request.POST permite poner la logica desde en la clase Forms y no en la View 
+    if request.method == 'POST':
+        if form.is_valid():
+            '''Es en caso de que el password se muestre cuando se crea la cuenta. 
+            Para guardar correctamente en la BD.'''
+            user = form.save( commit = False )
+            user.set_password( user.password )
+            user.save()
+            return redirect('client:login')
+
     context = {
         'form' : form
     }
