@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login as login_django, logout as l
 from django.contrib.auth.decorators import login_required
 
 from django.views.generic import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 def show(request):
@@ -71,12 +72,19 @@ def logout(request):
     logout_django(request)
     return redirect('client:login')
 
+
+class DashboardView(LoginRequiredMixin, View):
+    login_url = 'client:login'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'dashboard.html', {})
+'''
 # El login_required es para ingresar a la pagina unicamente si esta loggeado
 @login_required( login_url = 'client:login') # Si no esta loggeado, lo manda a la de login.
-def dashboard(request):
+def dashboard_function(request):
     # if request.user.is_authenticate()
     return render(request, 'dashboard.html', {})
-
+'''
 
 def create(request):
 
