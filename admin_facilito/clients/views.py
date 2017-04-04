@@ -12,19 +12,19 @@ def show(request):
     return HttpResponse("Prueba correcta")
 
 class LoginView(View):
-    form = LoginForm()
-    message = None
+    form     = LoginForm()
+    message  = None
     template = 'login.html'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
             return redirect('client:dashboard')
         return render(request, self.template, self.get_context())
-    
+
     def post(self, request, *args, **kwargs):
         username_post = request.POST['username']
         password_post = request.POST['password']
-        
+
         # Se verifica si el usuario y contasena mandado existen dentro de la base de datos.
         user = authenticate(username=username_post, password=password_post)
         if user is not None:
@@ -37,7 +37,7 @@ class LoginView(View):
     # Funcion para obtener el contexto
     def get_context(self):
         return {'form': self.form, 'message': self.message}
-
+'''
 def login_con_funcion(request):
     # Primero verifica que en caso de que el usuario este
     # logueado, lo regresa a la ventana de dashboard
@@ -49,7 +49,7 @@ def login_con_funcion(request):
     if request.method == 'POST':
         username_post = request.POST['username']
         password_post = request.POST['password']
-        
+
         # Se verifica si el usuario y contasena mandado existen dentro de la base de datos.
         user = authenticate(username=username_post, password=password_post)
         if user is not None:
@@ -64,6 +64,7 @@ def login_con_funcion(request):
         'message': message
     }
     return render(request, 'login.html', context)
+'''
 
 @login_required( login_url = 'client:login')
 def logout(request):
@@ -78,11 +79,11 @@ def dashboard(request):
 
 
 def create(request):
-    
-    form = CreateUserForm(request.POST or None)  # El Request.POST permite poner la logica desde en la clase Forms y no en la View 
+
+    form = CreateUserForm(request.POST or None)  # El Request.POST permite poner la logica desde en la clase Forms y no en la View
     if request.method == 'POST':
         if form.is_valid():
-            '''Es en caso de que el password se muestre cuando se crea la cuenta. 
+            '''Es en caso de que el password se muestre cuando se crea la cuenta.
             Para guardar correctamente en la BD.'''
             user = form.save( commit = False )
             user.set_password( user.password )
