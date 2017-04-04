@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from forms import LoginForm
 from forms import CreateUserForm
 
@@ -7,8 +7,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as login_django, logout as logout_django
 from django.contrib.auth.decorators import login_required
 
-from django.views.generic import View, DetailView
+from django.views.generic import View, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from django.core.urlresolvers import reverse_lazy
 
 # Create your views here.
 
@@ -93,13 +95,29 @@ def dashboard_function(request):
     return render(request, 'dashboard.html', {})
 '''
 
+
+class Create(CreateView):
+    success_url   = reverse_lazy('client:login') #reverse_lazy regresa toda la url de client:login
+    model         = User
+    template_name = 'create.html'
+    form_class    = CreateUserForm
+
+    # Se sobreescribe form_valid para la encriptacion del password
+    def form_valid(self, form):
+        self.object = form.save( commit = False )
+        self.object.set_password( self.object.password )
+        self.object.save()
+        return HttpResponseRedirect( self.get_success_url() ) #REcupera la url de exito -- success_url   = 'client:login'
+
+
+'''
 def create(request):
 
     form = CreateUserForm(request.POST or None)  # El Request.POST permite poner la logica desde en la clase Forms y no en la View
     if request.method == 'POST':
         if form.is_valid():
-            '''Es en caso de que el password se muestre cuando se crea la cuenta.
-            Para guardar correctamente en la BD.'''
+            # Es en caso de que el password se muestre cuando se crea la cuenta.
+            # Para guardar correctamente en la BD.
             user = form.save( commit = False )
             user.set_password( user.password )
             user.save()
@@ -109,3 +127,4 @@ def create(request):
         'form' : form
     }
     return render(request, 'create.html', context)
+'''

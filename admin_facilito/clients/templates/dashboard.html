@@ -1,4 +1,4 @@
 <h3>Welcome</h3>
 
-<a href="{% url 'client:show' %}">Show</a>
+<a href="{% url 'client:show' user.username%}">Show</a>
 <a href="{% url 'client:logout' %}">Logout</a>
