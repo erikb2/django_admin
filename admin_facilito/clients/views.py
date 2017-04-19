@@ -1,15 +1,18 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
+
 from forms import LoginForm
 from forms import CreateUserForm
+from forms import EditUserForm
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as login_django, logout as logout_django
 from django.contrib.auth.decorators import login_required
 
 from django.views.generic import View, DetailView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic.edit import UpdateView
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 
 # Create your views here.
@@ -128,3 +131,12 @@ def create(request):
     }
     return render(request, 'create.html', context)
 '''
+
+class Edit(UpdateView):
+    model = User
+    template_name = 'edit.html'
+    success_url   = reverse_lazy('client:dashboard')
+    form_class    = EditUserForm
+
+    def get_object(self, queryset = None):
+        return self.request.user
