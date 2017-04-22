@@ -1,14 +1,18 @@
-<h2> Edit user information </h2>
+<!-- Se refiere al html base que va a utilizar -->
+{% extends 'bases/edit_base.html' %}
 
-{% if messages %}
-  {% for message in messages %}
-  <li> {{ message }} </li>
-  {% endfor %}
-</ul>
-{% endif %}
+{% block title %}
+  Editar Usuario
+{% endblock %}
 
-<form method = "post" action="">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Editar">
-</form>
+{% block subtitle %}
+  Editar Usuario
+{% endblock %}
+
+{% block content %}
+  <form method = "post" action="">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Actualizar">
+  </form>
+{% endblock %}
