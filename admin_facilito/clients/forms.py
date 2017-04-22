@@ -21,10 +21,9 @@ def must_be_gt(value_password):
 Class
 '''
 # Clase para generar el form de un login
-class LoginForm(forms.Form):
+class LoginUserForm(forms.Form):
     username = forms.CharField(max_length=20)
     password = forms.CharField(max_length=20, widget = forms.PasswordInput())
-
 
 class CreateUserForm(forms.ModelForm):
 

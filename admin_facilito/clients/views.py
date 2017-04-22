@@ -1,13 +1,18 @@
 from django.shortcuts import render, redirect
+
 from django.http import HttpResponse, HttpResponseRedirect
 
-from forms import LoginForm
+from forms import LoginUserForm
 from forms import CreateUserForm
 from forms import EditUserForm
 from forms import EditPasswordForm
 
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as login_django, logout as logout_django
+
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as login_django
+from django.contrib.auth import logout as logout_django
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 
 from django.views.generic import View, DetailView, CreateView
@@ -15,19 +20,21 @@ from django.views.generic.edit import UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
-from django.contrib.auth import update_session_auth_hash
 
-# Create your views here.
 
-class ShowView(DetailView):
+'''
+Class
+'''
+
+class ShowClass(DetailView):
     model           =  User
     template_name   = 'show.html'
     slug_field      = 'username'  #Campo de la base de datos por el que se va a traer la info
     slug_url_kwarg  = 'username_url' #Como se llama en la url.
 
 
-class LoginView(View):
-    form     = LoginForm()
+class LoginClass(View):
+    form     = LoginUserForm()
     message  = None
     template = 'login.html'
 
@@ -81,13 +88,8 @@ def login_con_funcion(request):
     return render(request, 'login.html', context)
 '''
 
-@login_required( login_url = 'client:login')
-def logout(request):
-    logout_django(request)
-    return redirect('client:login')
 
-
-class DashboardView(LoginRequiredMixin, View):
+class DashboardClass(LoginRequiredMixin, View):
     login_url = 'client:login'
 
     def get(self, request, *args, **kwargs):
@@ -101,7 +103,7 @@ def dashboard_function(request):
 '''
 
 
-class Create(CreateView):
+class CreateClass(CreateView):
     success_url   = reverse_lazy('client:login') #reverse_lazy regresa toda la url de client:login
     model         = User
     template_name = 'create.html'
@@ -134,7 +136,8 @@ def create(request):
     return render(request, 'create.html', context)
 '''
 
-class Edit(UpdateView):
+class EditClass(LoginRequiredMixin, UpdateView):
+    login_url = 'client:login'
     model = User
     template_name = 'edit.html'
     success_url   = reverse_lazy('client:dashboard')
@@ -144,6 +147,10 @@ class Edit(UpdateView):
         return self.request.user
 
 
+'''
+Functions
+'''
+@login_required( login_url = 'client:login')
 def edit_password(request):
     message = None
     # En caso de que sea una solicitud POST, dentro de form se recuperan todos los datos del formulario.
@@ -168,3 +175,8 @@ def edit_password(request):
 
     context = {'form' : form, 'message': message}
     return render(request, 'edit_password.html', context)
+
+@login_required( login_url = 'client:login')
+def logout(request):
+    logout_django(request)
+    return redirect('client:login')
