@@ -7,6 +7,8 @@ from forms import CreateUserForm
 from forms import EditUserForm
 from forms import EditPasswordForm
 
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.models import User
 
 from django.contrib.auth import authenticate
@@ -20,6 +22,7 @@ from django.views.generic.edit import UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
+
 
 
 '''
@@ -136,12 +139,20 @@ def create(request):
     return render(request, 'create.html', context)
 '''
 
-class EditClass(LoginRequiredMixin, UpdateView):
+class EditClass(LoginRequiredMixin, UpdateView, SuccessMessageMixin):
     login_url = 'client:login'
     model = User
     template_name = 'edit.html'
-    success_url   = reverse_lazy('client:dashboard')
+    success_url   = reverse_lazy('client:edit')
     form_class    = EditUserForm
+    success_message = "Tu usuario ha sido actualizado"
+
+    # El metodo form_valid se llama cuando el formulario es valido
+    # Se sobreescribe para la personalizacion con los messages
+    def form_valid(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_message)
+        #Se le dice que siga con el flujo normal despues de haber ejecutado nuestra validacion
+        return super(EditClass, self).form_valid(request, *args, **kwargs)
 
     def get_object(self, queryset = None):
         return self.request.user
@@ -152,7 +163,6 @@ Functions
 '''
 @login_required( login_url = 'client:login')
 def edit_password(request):
-    message = None
     # En caso de que sea una solicitud POST, dentro de form se recuperan todos los datos del formulario.
     form = EditPasswordForm(request.POST or None)
 
@@ -168,12 +178,12 @@ def edit_password(request):
                 request.user.save()
                 # Se utiliza para continuar al usuario en su sesion
                 update_session_auth_hash(request, request.user)
-                message = "password actualizado"
+                messages.success(request, 'Password actualizado, messages')
             else:
-                message = "Password invalido. No corresponde al usuario %s" %(request.user.username)
+                messages.success(request, "Password invalido. No corresponde al usuario %s" %(request.user.username))
 
 
-    context = {'form' : form, 'message': message}
+    context = {'form' : form, }
     return render(request, 'edit_password.html', context)
 
 @login_required( login_url = 'client:login')
