@@ -10,6 +10,14 @@ ERROR_MESSAGE_EMAIL = {'required': 'E-mail requerido', 'invalid':  'Correo elect
 
 
 '''
+Functions
+'''
+def must_be_gt(value_password):
+    if len(value_password) < 5:
+        raise forms.ValidationError('El password debe contener una longitud de 5 como minimo')
+    value_password
+
+'''
 Class
 '''
 # Clase para generar el form de un login
@@ -48,3 +56,19 @@ class EditUserForm(forms.ModelForm):
     class Meta:
         model  = User
         fields = ('username', 'email', 'first_name', 'last_name')
+
+# El atributo validators se utiliza para encapsular las funciones que se deben de utilizar para validar los campos
+class EditPasswordForm(forms.Form):
+    # Obtiene los campos del formulario para cambiar la contrasena
+    password        = forms.CharField(max_length=20, widget = forms.PasswordInput(), error_messages = ERROR_MESSAGE_PASSWORD)
+    new_password    = forms.CharField(max_length=20, widget = forms.PasswordInput(), error_messages = ERROR_MESSAGE_PASSWORD, validators = [must_be_gt])
+    repeat_password = forms.CharField(max_length=20, widget = forms.PasswordInput(), error_messages = ERROR_MESSAGE_PASSWORD, validators = [must_be_gt])
+
+    # Metodo que se llama cuando se realiza el form.is_valid dentro de la vista
+    def clean(self):
+        clean_data = super(EditPasswordForm, self).clean()
+        password1  = clean_data.get('new_password')
+        password2  = clean_data.get('repeat_password')
+
+        if password1 != password2:
+            raise forms.ValidationError('El nuevo password no es el mismo que el de validacion')

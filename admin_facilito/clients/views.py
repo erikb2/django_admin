@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from forms import LoginForm
 from forms import CreateUserForm
 from forms import EditUserForm
+from forms import EditPasswordForm
 
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as login_django, logout as logout_django
@@ -14,6 +15,7 @@ from django.views.generic.edit import UpdateView
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
+from django.contrib.auth import update_session_auth_hash
 
 # Create your views here.
 
@@ -140,3 +142,29 @@ class Edit(UpdateView):
 
     def get_object(self, queryset = None):
         return self.request.user
+
+
+def edit_password(request):
+    message = None
+    # En caso de que sea una solicitud POST, dentro de form se recuperan todos los datos del formulario.
+    form = EditPasswordForm(request.POST or None)
+
+    # Si es una solicitud POSt, se valida que la informacion es correcta
+    if request.method == 'POST':
+        if form.is_valid():
+            current_password = form.cleaned_data['password'] # Obtiene los valores de la forma
+            new_password = form.cleaned_data['new_password']
+
+            # Despues de validar que la contrasena (formato) es valida, se verifica si la contrasena corresponde al usuario actual.
+            if authenticate(username = request.user.username, password = current_password):
+                request.user.set_password( new_password ) # Si si, se le actualiza la nueva contrasena
+                request.user.save()
+                # Se utiliza para continuar al usuario en su sesion
+                update_session_auth_hash(request, request.user)
+                message = "password actualizado"
+            else:
+                message = "Password invalido. No corresponde al usuario %s" %(request.user.username)
+
+
+    context = {'form' : form, 'message': message}
+    return render(request, 'edit_password.html', context)
