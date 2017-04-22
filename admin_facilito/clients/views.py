@@ -180,7 +180,7 @@ def edit_password(request):
                 update_session_auth_hash(request, request.user)
                 messages.success(request, 'Password actualizado, messages')
             else:
-                messages.success(request, "Password invalido. No corresponde al usuario %s" %(request.user.username))
+                messages.error(request, "Password invalido. No corresponde al usuario %s" %(request.user.username))
 
 
     context = {'form' : form, }
