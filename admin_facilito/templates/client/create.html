@@ -1,0 +1,24 @@
+{% extends 'bases/base_admin.html' %}
+
+{% block title %} Admin Facilito | Crear Usuario {% endblock %}
+
+{% block scripts %}
+<!--Aqui van scripts-->
+{% endblock %}
+
+{% block content %}
+<!--Proyectos recientes-->
+  <h3>Crear Usuario</h3>
+  <form method="post" action="">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Crear usuario"> <!--Siempre va adentro-->
+  </form>
+{% endblock %}
+
+{% block footer %}
+  <!--Footers-->
+  <footer>
+    <p> Ya cuento con una <a href="{% url 'client:login' %}"> cuenta </a></p>
+  </footer>
+{% endblock %}

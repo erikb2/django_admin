@@ -39,7 +39,7 @@ class ShowClass(DetailView):
 class LoginClass(View):
     form     = LoginUserForm()
     message  = None
-    template = 'login.html'
+    template = 'client/login.html'
 
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated():
@@ -96,7 +96,7 @@ class DashboardClass(LoginRequiredMixin, View):
     login_url = 'client:login'
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'dashboard.html', {})
+        return render(request, 'client/dashboard.html', {})
 '''
 # El login_required es para ingresar a la pagina unicamente si esta loggeado
 @login_required( login_url = 'client:login') # Si no esta loggeado, lo manda a la de login.
@@ -109,7 +109,7 @@ def dashboard_function(request):
 class CreateClass(CreateView):
     success_url   = reverse_lazy('client:login') #reverse_lazy regresa toda la url de client:login
     model         = User
-    template_name = 'create.html'
+    template_name = 'client/create.html'
     form_class    = CreateUserForm
 
     # Se sobreescribe form_valid para la encriptacion del password
@@ -142,7 +142,7 @@ def create(request):
 class EditClass(LoginRequiredMixin, UpdateView, SuccessMessageMixin):
     login_url = 'client:login'
     model = User
-    template_name = 'edit.html'
+    template_name = 'client/edit.html'
     success_url   = reverse_lazy('client:edit')
     form_class    = EditUserForm
     success_message = "Tu usuario ha sido actualizado"
@@ -184,7 +184,7 @@ def edit_password(request):
 
 
     context = {'form' : form, }
-    return render(request, 'edit_password.html', context)
+    return render(request, 'client/edit_password.html', context)
 
 @login_required( login_url = 'client:login')
 def logout(request):

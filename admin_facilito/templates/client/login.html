@@ -1,0 +1,31 @@
+{% extends 'bases/base_admin.html' %}
+
+{% block title %} Admin Facilito | Ingresar {% endblock %}
+
+{% block scripts %}
+<!--Aqui van scripts-->
+  {% load staticfiles %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}" />
+{% endblock %}
+
+{% block content %}
+<!--Proyectos recientes-->
+<div class="class_container_form">
+  <form method = "post" action="">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="ingreso">
+  </form>
+  
+</div>
+
+
+{% endblock %}
+
+{% block footer %}
+<!--Footers-->
+<footer>
+  <a href="#"> Olvidé mi contraseña </a>
+  <p> Crea una nueva cuenta <a href="{% url 'client:create' %}"> aquí </a></p>
+</footer>
+{% endblock %}
