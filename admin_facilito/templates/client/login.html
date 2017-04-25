@@ -1,31 +1,51 @@
 {% extends 'bases/base_admin.html' %}
 
-{% block title %} Admin Facilito | Ingresar {% endblock %}
+{% block title %} Admin facilito {% endblock %}
 
 {% block scripts %}
-<!--Aqui van scripts-->
-  {% load staticfiles %}
+	{% load staticfiles %}
 	<link rel="stylesheet" type="text/css" href="{% static 'css/forms.css' %}" />
+
 {% endblock %}
 
 {% block content %}
-<!--Proyectos recientes-->
-<div class="class_container_form">
-  <form method = "post" action="">
-      {% csrf_token %}
-      {{ form.as_p }}
-      <input type="submit" value="ingreso">
-  </form>
-  
-</div>
 
+	<div class= "class_container_form">
+		<form method="post" action="">
+			{% csrf_token %}
+
+			  {# {{ form.as_p }} #}
+
+			  {% for field in form %}
+
+			  	<div class="row" >
+			  		<div class="input-field col s12">
+
+			  			{% if field.errors %}
+			  				{{ field.errors }}
+			  			{% endif %}
+
+			  			{{ field }}
+
+			  			<label class="{% for class in field.label_clasess %} {{ class }} {% endfor %}" for="{{ field.name }}" >  {{ field.label }} </label>
+
+
+			  		</div>
+			  	</div>
+
+			  {%  endfor %}
+
+			<input class="btn #9e9e9e grey" type="submit" value="ingreso">
+		</form>
+	</div>
 
 {% endblock %}
 
 {% block footer %}
-<!--Footers-->
-<footer>
-  <a href="#"> Olvidé mi contraseña </a>
-  <p> Crea una nueva cuenta <a href="{% url 'client:create' %}"> aquí </a></p>
-</footer>
+
+	<footer>
+  	<a href="#"> Olvide mi contraseña  </a>
+		<p> Crea una nueva cuenta <a href="{% url 'client:create' %}"> aqui </a></p>
+	</footer>
+
 {% endblock %}

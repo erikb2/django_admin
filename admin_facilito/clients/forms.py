@@ -28,8 +28,8 @@ class LoginUserForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super(LoginUserForm, self).__init__(*args, **kwargs) # Se le dice que siga con su flujo normal despues del override
         # Es para agregarle clases a las etiquetas en el html
-        self.fields['username'].widget.attrs.update( {'class': 'username_login'} )
-        self.fields['password'].widget.attrs.update( {'class': 'password_login'} )
+        self.fields['username'].widget.attrs.update( {'id': 'username_login', 'class': 'input_login' } )
+        self.fields['password'].widget.attrs.update( {'id': 'password_login', 'class': 'input_login' }) 
 
 class CreateUserForm(forms.ModelForm):
 
@@ -44,6 +44,13 @@ class CreateUserForm(forms.ModelForm):
     email    = forms.CharField(
         error_messages = ERROR_MESSAGE_EMAIL
         )
+
+    def __init__(self, *args, **kwargs):
+		super(CreateUserForm, self).__init__(*args, **kwargs)
+		self.fields['username'].widget.attrs.update( {'id': 'username_create' } )
+		self.fields['password'].widget.attrs.update( {'id': 'password_create' } )
+		self.fields['email'].widget.attrs.update( {'id': 'email_create' } )
+
     class Meta:
         model = User
         fields = ('username', 'password', 'email')
