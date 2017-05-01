@@ -10,4 +10,6 @@ urlpatterns = [
     url(r'^create/$', views.CreateClass.as_view(), name="create"),
     url(r'^edit/$', views.EditClass.as_view(), name="edit"),
     url(r'^edit_password/$', views.edit_password, name="edit_password"),
+    url(r'^edit_client/$', views.edit_client, name="edit_client"),
+
 ]

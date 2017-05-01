@@ -2,10 +2,13 @@ from django.shortcuts import render, redirect
 
 from django.http import HttpResponse, HttpResponseRedirect
 
+from .models import Client
+
 from forms import LoginUserForm
 from forms import CreateUserForm
 from forms import EditUserForm
 from forms import EditPasswordForm
+from forms import EditClientForm
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -190,3 +193,19 @@ def edit_password(request):
 def logout(request):
     logout_django(request)
     return redirect('client:login')
+
+@login_required( login_url = 'client:login')
+def edit_client(request):
+    form = EditClientForm(request.POST or None, instance = client_instance(request.user) )  # Rellena los campos con lo que existe actualmente dentro de la BD
+    if request.method == 'POST':
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Datos actualizados correctamente')
+
+    return render(request, 'client/edit_client.html', {'form': form})
+
+def client_instance(user):
+    try:
+        return user.client
+    except:
+        return Client(user = user)

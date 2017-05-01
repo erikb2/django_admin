@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 
+from .models import Client
+
 '''
 Constants
 '''
@@ -29,7 +31,7 @@ class LoginUserForm(forms.Form):
         super(LoginUserForm, self).__init__(*args, **kwargs) # Se le dice que siga con su flujo normal despues del override
         # Es para agregarle clases a las etiquetas en el html
         self.fields['username'].widget.attrs.update( {'id': 'username_login', 'class': 'input_login' } )
-        self.fields['password'].widget.attrs.update( {'id': 'password_login', 'class': 'input_login' }) 
+        self.fields['password'].widget.attrs.update( {'id': 'password_login', 'class': 'input_login' })
 
 class CreateUserForm(forms.ModelForm):
 
@@ -84,3 +86,10 @@ class EditPasswordForm(forms.Form):
 
         if password1 != password2:
             raise forms.ValidationError('El nuevo password no es el mismo que el de validacion')
+
+
+class EditClientForm(forms.ModelForm):
+    class Meta:
+        model   = Client
+        # fields = ['', ''] -- Los que quiero que esten.
+        exclude = ['user'] # Excluye los campos que se encuentren aqui del modelo
