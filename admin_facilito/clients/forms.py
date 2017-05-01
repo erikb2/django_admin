@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from django import forms
 from django.contrib.auth.models import User
 
@@ -61,11 +64,16 @@ class EditUserForm(forms.ModelForm):
 
     username = forms.CharField(
         max_length=20,
-        error_messages = ERROR_MESSAGE_USER
+        error_messages = ERROR_MESSAGE_USER,
+        label = 'Nombre de Usuario'
         )
     email    = forms.CharField(
-        error_messages = ERROR_MESSAGE_EMAIL
+        error_messages = ERROR_MESSAGE_EMAIL,
+        label = 'Correo Electrónico'
         )
+
+    first_name = forms.CharField(label = "Nombre Completo")
+    last_name  = forms.CharField(label = "Apellido")
 
     class Meta:
         model  = User
@@ -89,7 +97,16 @@ class EditPasswordForm(forms.Form):
 
 
 class EditClientForm(forms.ModelForm):
+
+    job = forms.CharField(label = "Trabajo actual", required=False)
+    bio = forms.CharField(label = "Biografía", widget = forms.Textarea, required=False)
+
     class Meta:
         model   = Client
         # fields = ['', ''] -- Los que quiero que esten.
         exclude = ['user'] # Excluye los campos que se encuentren aqui del modelo
+
+    def __init__(self, *args, **kwargs):
+        super(EditClientForm, self).__init__(*args, **kwargs)
+        self.fields['job'].widget.attrs.update({'id': 'job_edit_client', 'class': 'validate'})
+        self.fields['job'].widget.attrs.update({'id': 'bio_edit_client', 'class': 'validate'})
