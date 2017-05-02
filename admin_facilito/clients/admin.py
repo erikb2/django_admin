@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client
+from .models import Client, SocialNetwork
 
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as AuthUserAdmin
@@ -15,8 +15,12 @@ class ClientInLine(admin.StackedInline):
     model = Client
     can_delete = False
 
+class SocialInLine(admin.StackedInline):
+    model = SocialNetwork
+    can_delete = False
+
 class UserAdmin(AuthUserAdmin):
-    inlines = [ClientInLine]
+    inlines = [ClientInLine, SocialInLine]
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
