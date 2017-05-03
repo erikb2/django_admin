@@ -1,0 +1,15 @@
+{% load client_extras %}
+
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title> {{ user.username }}</title>
+</head>
+<body>
+  <h3> Hola Usuario {{ user.username|title }} </h3>
+  <p> Biografía </p>
+  <p> {{ user.username|saluda }} </p>
+
+
+</body>
+</html>

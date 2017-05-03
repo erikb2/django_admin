@@ -33,7 +33,7 @@ Class
 '''
 
 class ShowClass(DetailView):
-    model           =  User
+    model           = User
     template_name   = 'client/show.html'
     slug_field      = 'username'  #Campo de la base de datos por el que se va a traer la info
     slug_url_kwarg  = 'username_url' #Como se llama en la url.
