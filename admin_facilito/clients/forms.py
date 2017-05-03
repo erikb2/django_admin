@@ -56,6 +56,14 @@ class CreateUserForm(forms.ModelForm):
 		self.fields['password'].widget.attrs.update( {'id': 'password_create' } )
 		self.fields['email'].widget.attrs.update( {'id': 'email_create' } )
 
+    # Nos permite saber si el correo electronico a ingresar ya se ha registrado anteriormente
+    # El metodo clean_email se llama cuando se ejecuta el metodo is_valid()
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).count():
+            raise forms.ValidationError('El email ingresado ya está registrado en la plataforma')
+        return email
+
     class Meta:
         model = User
         fields = ('username', 'password', 'email')
@@ -79,6 +87,12 @@ class EditUserForm(forms.ModelForm):
         model  = User
         fields = ('username', 'email', 'first_name', 'last_name')
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if User.objects.filter(email=email).exclude(pk = self.instance.id).count():
+            raise forms.ValidationError('El email ingresado ya está registrado en la plataforma')
+        return email
+
 # El atributo validators se utiliza para encapsular las funciones que se deben de utilizar para validar los campos
 class EditPasswordForm(forms.Form):
     # Obtiene los campos del formulario para cambiar la contrasena
@@ -94,7 +108,6 @@ class EditPasswordForm(forms.Form):
 
         if password1 != password2:
             raise forms.ValidationError('El nuevo password no es el mismo que el de validacion')
-
 
 class EditClientForm(forms.ModelForm):
 
