@@ -2,13 +2,14 @@ from django.shortcuts import render, redirect
 
 from django.http import HttpResponse, HttpResponseRedirect
 
-from .models import Client
+from .models import Client, SocialNetwork
 
 from forms import LoginUserForm
 from forms import CreateUserForm
 from forms import EditUserForm
 from forms import EditPasswordForm
 from forms import EditClientForm
+from forms import EditClientSocial
 
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -142,6 +143,7 @@ def create(request):
     return render(request, 'create.html', context)
 '''
 
+'''
 class EditClass(LoginRequiredMixin, UpdateView, SuccessMessageMixin):
     login_url = 'client:login'
     model = User
@@ -159,7 +161,25 @@ class EditClass(LoginRequiredMixin, UpdateView, SuccessMessageMixin):
 
     def get_object(self, queryset = None):
         return self.request.user
+'''
 
+# LoginRequiredMixin se utiliza para validar que el usuario esta loggeado
+class EditSocialClass(LoginRequiredMixin, UpdateView, SuccessMessageMixin):
+    login_url     = 'client:login'
+    model         = SocialNetwork
+    template_name = 'client/edit_social.html'
+    success_url   = reverse_lazy('client:edit_social')
+    form_class    = EditClientSocial
+    success_message = "Tus usuarios han sifo actualizados exitosamente"
+
+    def get_object(self, queryset = None):
+        return self.get_social_instance()
+
+    def get_social_instance(self):
+        try:
+            return self.request.user.socialnetwork
+        except:
+            return SocialNetwork(user = self.request.user)
 
 '''
 Functions
@@ -195,7 +215,7 @@ def logout(request):
     return redirect('client:login')
 
 @login_required( login_url = 'client:login')
-def edit_client(request):
+def edit(request):
     form_client = EditClientForm(request.POST or None, instance = client_instance(request.user) )  # Rellena los campos con lo que existe actualmente dentro de la BD
     form_user   = EditUserForm(request.POST or None, instance = request.user)
     if request.method == 'POST':
@@ -208,7 +228,7 @@ def edit_client(request):
         'form_client': form_client,
         'form_user'  : form_user
     }
-    return render(request, 'client/edit_client.html', context)
+    return render(request, 'client/edit.html', context)
 
 def client_instance(user):
     try:

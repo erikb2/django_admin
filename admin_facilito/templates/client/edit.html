@@ -1,6 +1,6 @@
 {% extends 'client/bases/edit_base.html' %}
 
-{% block title %} Editar Usuario {% endblock %}
+{% block title %} Editar cuenta {% endblock %}
 
 {% block scripts %}
 	{% load staticfiles %}
@@ -8,14 +8,23 @@
 {% endblock %}
 
 {% block content %}
+	<div class="collection">
+		<a href="{% url 'client:edit' %}" class="collection-item active">Perfil</a>
+		<a href="{% url 'client:edit_password' %}" class="collection-item">Password</a>
+		<a href="{% url 'client:edit_social' %}" class="collection-item">Redes Sociales</a>
+	</div>
+
 	<div class = "class_container_form" >
 		<form method="post" action="">
 			{% csrf_token %}
-			{{ form.as_p }}
-			<input type="submit" value="actualizar">
+
+      {% include "includes/_forms.html" with form=form_user %}
+      {% include "includes/_forms.html" with form=form_client %}
+
+      <input class="btn #9e9e9e grey" type="submit" value="Actualizar">
 		</form>
 	</div>
-{% endblock %}
 
+{% endblock %}
 
 {% block footer %} {% endblock %}
