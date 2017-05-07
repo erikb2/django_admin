@@ -4,16 +4,21 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from django.db import models
 
+from status.models import Status
+from django.utils import timezone
+
 import datetime
 
 # Create your models here.
+
+
 class Project(models.Model):
     user        = models.ForeignKey(User, on_delete= models.CASCADE)
     title       = models.CharField(max_length=50)
     description = models.TextField()
     dead_line   = models.DateField()
     create_date = models.DateField(default = datetime.date.today)
-    slug        = models.CharField(max_length=50, default = "") # Campo que se utiliza para obtener el registro de la base de datos
+    slug        = models.CharField(max_length=50, default = "")  # Campo que se utiliza para obtener el registro de la base de datos
 
     def __str__(self):
         return self.title
@@ -24,4 +29,10 @@ class Project(models.Model):
             raise ValidationError('Un proyecto con el mismo titulo ya se encuentra registrado')
 
     def create_slug_field(self, value):
-		return value.lower().replace(" ", "-")
+        return value.lower().replace(" ", "-")
+
+
+class ProjectStatus(models.Model):
+    Project = models.ForeignKey(Project)
+    status = models.ForeignKey(Status)
+    create_date = models.DateTimeField(default=timezone.now)
